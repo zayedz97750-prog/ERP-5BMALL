@@ -1,0 +1,54 @@
+<!-- ═══ 5B Mall — Contracts Page ═══ -->
+    <!-- ══ CONTRACTS ══ -->
+    <div class="page" id="page-contracts">
+      <div class="card">
+        <div class="table-toolbar">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input class="search-input" type="text" id="searchInput" placeholder="البحث..." oninput="filterContracts()" />
+          </div>
+          <select class="fsel" id="statusFilter" onchange="filterContracts()">
+            <option value="">كل الحالات</option>
+            <option value="active">نشط</option><option value="soon">ينتهي قريباً</option>
+            <option value="ended">منتهي</option><option value="cancelled">ملغي</option>
+          </select>
+          <select class="fsel" id="typeFilter" hidden style="display:none" onchange="filterContracts()">
+            <option value="">كل الأنواع</option>
+            <option value="commercial">تجاري</option>
+            <option value="warehouse">مستودع</option>
+            <option value="short">قصير الأجل</option>
+            <option value="investment">استثمار</option>
+          </select>
+          <select class="fsel" id="yearFilter" onchange="filterContracts()">
+            <option value="">كل السنوات</option>
+          </select>
+          <select class="fsel" id="contractMonthFilter" aria-label="شهر بداية العقد" onchange="filterContracts()"><option value="">كل أشهر البداية</option><option value="1">كانون الثاني</option><option value="2">شباط</option><option value="3">آذار</option><option value="4">نيسان</option><option value="5">أيار</option><option value="6">حزيران</option><option value="7">تموز</option><option value="8">آب</option><option value="9">أيلول</option><option value="10">تشرين الأول</option><option value="11">تشرين الثاني</option><option value="12">كانون الأول</option></select><span class="table-count" id="tableCount">0 عقد</span>
+          <button class="btn btn-outline btn-sm" onclick="exportExcel()" title="تنزيل ملف Excel بجميع العقود">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تنزيل Excel
+          </button>
+          <input type="file" id="importExcelInput" accept=".xls,.xlsx" style="display:none" onchange="handleImportExcelFile(event)" />
+
+
+        </div>
+        <div class="table-wrap">
+          <table class="contracts-proportional" aria-label="جدول العقود"><colgroup><col style="width:2.65781%"><col style="width:8.63787%"><col style="width:5.98007%"><col style="width:5.64784%"><col style="width:12.29236%"><col style="width:8.63787%"><col style="width:10.29900%"><col style="width:4.31894%"><col style="width:6.64452%"><col style="width:6.64452%"><col style="width:8.30565%"><col style="width:6.97674%"><col style="width:3.65449%"><col style="width:3.98671%"><col style="width:5.31561%"></colgroup>
+            <thead><tr>
+              <th>#</th>
+              <th class="sort-th" data-field="num" onclick="sortContracts('num')">رقم العقد<span class="sort-icon">⇅</span></th>
+              <th class="sort-th" data-field="acct" onclick="sortContracts('acct')">رقم الحساب<span class="sort-icon">⇅</span></th>
+              <th>النوع</th><th>المستأجر</th>
+              <th>العلامة التجارية</th><th>الموقع</th><th>المدة</th>
+              <th class="sort-th" data-field="start" onclick="sortContracts('start')">تاريخ البدء<span class="sort-icon">⇅</span></th>
+              <th>الانتهاء</th>
+              <th class="sort-th" data-field="value" onclick="sortContracts('value')">إجمالي الإيجار<span class="sort-icon">⇅</span></th>
+              <th>الحالة</th><th>الصورة</th><th>PDF</th><th>إجراءات</th>
+            </tr></thead>
+            <tbody id="contractTbody"></tbody>
+          </table>
+          <div class="empty-state" id="emptyState" style="display:none">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            <p>لا توجد عقود مطابقة</p>
+          </div>
+        </div>
+      </div>
+    </div>

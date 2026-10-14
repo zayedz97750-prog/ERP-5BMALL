@@ -1,0 +1,646 @@
+<!-- ═══ 5B Mall — Other Modals ═══ -->
+<!-- ══════════ ADD USER MODAL ══════════ -->
+<div class="modal-backdrop" id="userModalBackdrop" onclick="if(event.target===this)closeUserModal()">
+  <div class="modal" id="userModal" style="max-width:500px">
+    <div class="modal-header">
+      <div><div class="modal-title">إضافة موظف جديد</div><div class="modal-sub">تحديد بيانات الدخول والصلاحيات</div></div>
+      <button class="modal-close" onclick="closeUserModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="fsec-title">بيانات الموظف</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="flbl" for="u-name">الاسم الكامل <span class="req">*</span></label>
+          <input type="text" id="u-name" placeholder="مثال: محمد أحمد" />
+        </div>
+        <div class="form-group">
+          <label class="flbl" for="u-user">اسم المستخدم <span class="req">*</span></label>
+          <input type="text" id="u-user" placeholder="مثال: m.ahmed" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="flbl" for="u-pass">كلمة المرور <span class="req">*</span></label>
+          <input type="password" id="u-pass" placeholder="كلمة مرور قوية" />
+        </div>
+        <div class="form-group">
+          <label class="flbl" for="u-role">الدور الوظيفي <span class="req">*</span></label>
+          <select id="u-role" class="finput" onchange="updatePermCheckboxes()">
+            <option value="add">موظف إدخال عقود</option>
+            <option value="audit">موظف تدقيق</option>
+            <option value="manage">مدير عقود</option>
+            <option value="custom">صلاحيات مخصصة</option>
+          </select>
+        </div>
+      </div>
+      <div class="fsec-title" style="margin-top:16px">الصلاحيات</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <label class="perm-check"><input type="checkbox" id="p-contracts" onchange="toggleContractsBox()" /><div><div class="perm-check-label">العقود</div><div class="perm-check-sub">صلاحيات العقود — عرض / إضافة / تعديل / حذف</div></div></label>
+        <label class="perm-check"><input type="checkbox" id="p-reports" onchange="toggleReportsBox()" /><div><div class="perm-check-label">التقارير</div><div class="perm-check-sub">عرض التقارير المالية</div></div></label>
+        <label class="perm-check"><input type="checkbox" id="p-services" onchange="toggleServicesBox()" /><div><div class="perm-check-label">الخدمات</div><div class="perm-check-sub">الوصول إلى صفحة الخدمات</div></div></label>
+        <label class="perm-check"><input type="checkbox" id="p-export" /><div><div class="perm-check-label">تصدير البيانات</div><div class="perm-check-sub">تصدير إلى CSV</div></div></label>
+      </div>
+      <!-- العقود — مثل التقارير: كبسة العقود تظهر هذه القائمة -->
+      <div id="u-contracts-box" style="display:none;margin-top:10px;border:1px solid var(--border);border-radius:8px;padding:10px;background:var(--bg)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:14px;font-weight:700;color:var(--text)">صلاحيات العقود</span>
+          <button type="button" class="btn btn-ghost btn-xs" onclick="setContractsPerms(true)">تحديد الكل</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="p-contracts-view" /><div><div class="perm-check-label" style="font-size:14px">عرض العقود</div></div></label>
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="p-contracts-add" /><div><div class="perm-check-label" style="font-size:14px">إضافة عقد</div></div></label>
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="p-contracts-edit" /><div><div class="perm-check-label" style="font-size:14px">تعديل عقد</div></div></label>
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="p-contracts-delete" /><div><div class="perm-check-label" style="font-size:14px">حذف عقد</div></div></label>
+        </div>
+      </div>
+      <div id="u-reports-box" style="display:none;margin-top:10px;border:1px solid var(--border);border-radius:8px;padding:10px;background:var(--bg)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:14px;font-weight:700;color:var(--text)">التقارير المسموح له بها</span>
+          <button type="button" class="btn btn-ghost btn-xs" onclick="setSelectedReports('u-reports-list',ALL_REPORT_IDS)">تحديد الكل</button>
+        </div>
+        <div id="u-reports-list" style="display:grid;grid-template-columns:1fr 1fr;gap:6px"></div>
+      </div>
+      <!-- Services granular (like Reports): عرض/إضافة قراءة/تعديل -->
+      <div id="u-services-box" style="display:none;margin-top:10px;border:1px solid var(--border);border-radius:8px;padding:10px;background:var(--bg)">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">صلاحيات الخدمات — حدد العمليات المسموحة</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="p-srv-view" onchange="let m=document.getElementById('p-services');if(m)m.checked=this.checked" /><div><div class="perm-check-label" style="font-size:14px">عرض الخدمات</div></div></label>
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="p-srv-add" /><div><div class="perm-check-label" style="font-size:14px">إضافة قراءة</div></div></label>
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="p-srv-edit" /><div><div class="perm-check-label" style="font-size:14px">تعديل قراءة</div></div></label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="footer-l"></div>
+      <div class="footer-r">
+        <button class="btn btn-outline" onclick="closeUserModal()">إلغاء</button>
+        <button class="btn btn-primary" onclick="saveUser()">
+          <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>حفظ الموظف
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ EDIT LOGIN CREDENTIALS MODAL ══════════ -->
+<div class="modal-backdrop" id="credModalBackdrop" onclick="if(event.target===this)closeCredModal()">
+  <div class="modal" id="credModal" style="max-width:420px">
+    <div class="modal-header">
+      <div><div class="modal-title">بيانات الدخول</div><div class="modal-sub">تعديل اسم المستخدم وكلمة المرور — <span id="cred-name"></span></div></div>
+      <button class="modal-close" onclick="closeCredModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="flbl" for="cred-user">اسم المستخدم <span class="req">*</span></label>
+        <input type="text" id="cred-user" placeholder="اسم المستخدم" />
+      </div>
+      <div class="form-group">
+        <label class="flbl" for="cred-pass">كلمة المرور <span class="req">*</span></label>
+        <input type="text" id="cred-pass" placeholder="كلمة المرور" style="direction:ltr" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="footer-l"></div>
+      <div class="footer-r">
+        <button class="btn btn-outline" onclick="closeCredModal()">إلغاء</button>
+        <button class="btn btn-primary" onclick="saveCred()">
+          <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>حفظ
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ EDIT EMPLOYEE PERMISSIONS MODAL ══════════ -->
+<div class="modal-backdrop" id="permModalBackdrop" onclick="if(event.target===this)closePermModal()">
+  <div class="modal" id="permModal" style="max-width:500px">
+    <div class="modal-header">
+      <div><div class="modal-title">تعديل الصلاحيات</div><div class="modal-sub">الموظف: <span id="perm-name"></span></div></div>
+      <button class="modal-close" onclick="closePermModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="flbl" for="m-role">الدور الوظيفي</label>
+        <select id="m-role" class="finput" onchange="updatePermModalUI()">
+          <option value="add">موظف إدخال عقود</option>
+          <option value="audit">موظف تدقيق</option>
+          <option value="manage">مدير عقود</option>
+          <option value="custom">صلاحيات مخصصة</option>
+        </select>
+      </div>
+      <div class="fsec-title" style="margin-top:16px">الصلاحيات</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <label class="perm-check"><input type="checkbox" id="m-contracts" onchange="updatePermModalUI()" /><div><div class="perm-check-label">العقود</div><div class="perm-check-sub">صلاحيات العقود — عرض / إضافة / تعديل / حذف</div></div></label>
+        <label class="perm-check"><input type="checkbox" id="m-reports" onchange="updatePermModalUI()" /><div><div class="perm-check-label">التقارير</div><div class="perm-check-sub">عرض التقارير المالية</div></div></label>
+        <label class="perm-check"><input type="checkbox" id="m-services" onchange="updatePermModalUI()" /><div><div class="perm-check-label">الخدمات</div><div class="perm-check-sub">الوصول إلى صفحة الخدمات</div></div></label>
+        <label class="perm-check"><input type="checkbox" id="m-export" /><div><div class="perm-check-label">تصدير البيانات</div><div class="perm-check-sub">تصدير إلى CSV</div></div></label>
+      </div>
+      <div id="m-contracts-box" style="display:none;margin-top:10px;border:1px solid var(--border);border-radius:8px;padding:10px;background:var(--bg)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:14px;font-weight:700;color:var(--text)">صلاحيات العقود</span>
+          <button type="button" class="btn btn-ghost btn-xs" onclick="setContractsPermsEdit(true)">تحديد الكل</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="m-contracts-view" /><div><div class="perm-check-label" style="font-size:14px">عرض العقود</div></div></label>
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="m-contracts-add" /><div><div class="perm-check-label" style="font-size:14px">إضافة عقد</div></div></label>
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="m-contracts-edit" /><div><div class="perm-check-label" style="font-size:14px">تعديل عقد</div></div></label>
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="m-contracts-delete" /><div><div class="perm-check-label" style="font-size:14px">حذف عقد</div></div></label>
+        </div>
+      </div>
+      <div id="m-reports-box" style="display:none;margin-top:10px;border:1px solid var(--border);border-radius:8px;padding:10px;background:var(--bg)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:14px;font-weight:700;color:var(--text)">التقارير المسموح له بها</span>
+          <button type="button" class="btn btn-ghost btn-xs" onclick="setSelectedReports('m-reports-list',ALL_REPORT_IDS)">تحديد الكل</button>
+        </div>
+        <div id="m-reports-list" style="display:grid;grid-template-columns:1fr 1fr;gap:6px"></div>
+      </div>
+      <div id="m-services-box" style="display:none;margin-top:10px;border:1px solid var(--border);border-radius:8px;padding:10px;background:var(--bg)">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">صلاحيات الخدمات</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="m-srv-view" /><div><div class="perm-check-label" style="font-size:14px">عرض الخدمات</div></div></label>
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="m-srv-add" /><div><div class="perm-check-label" style="font-size:14px">إضافة قراءة</div></div></label>
+          <label class="perm-check" style="padding:6px 8px"><input type="checkbox" id="m-srv-edit" /><div><div class="perm-check-label" style="font-size:14px">تعديل قراءة</div></div></label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="footer-l"></div>
+      <div class="footer-r">
+        <button class="btn btn-outline" onclick="closePermModal()">إلغاء</button>
+        <button class="btn btn-primary" onclick="savePerm()">
+          <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>حفظ الصلاحيات
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ ASSIGN DUTY/TASK MODAL ══════════ -->
+<div class="modal-backdrop" id="dutyModalBackdrop" onclick="if(event.target===this)closeDutyModal()">
+  <div class="modal" id="dutyModal" style="max-width:420px">
+    <div class="modal-header">
+      <div><div class="modal-title">تحديد وظيفة اليوم</div><div class="modal-sub">الموظف: <span id="duty-name"></span></div></div>
+      <button class="modal-close" onclick="closeDutyModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="flbl" for="duty-text">وظيفة/مهمة اليوم</label>
+        <textarea id="duty-text" class="finput" placeholder="مثال: مراجعة عقود المستودعات وتحديث بياناتها"></textarea>
+        <div class="fhint">ستظهر هذه المهمة للموظف في القوائم الرئيسية عند تسجيل الدخول</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="footer-l"></div>
+      <div class="footer-r">
+        <button class="btn btn-outline" onclick="closeDutyModal()">إلغاء</button>
+        <button class="btn btn-primary" onclick="saveDuty()">
+          <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>حفظ
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ TERMINATE CONTRACT MODAL ══════════ -->
+<div class="modal-backdrop" id="terminateModalBackdrop" onclick="if(event.target===this)closeTerminateModal()">
+  <div class="modal" id="terminateModal" style="max-width:460px">
+    <div class="modal-header">
+      <div><div class="modal-title">إنهاء عقد</div><div class="modal-sub">حدد العقد وتاريخ الانتهاء وسبب الإنهاء</div></div>
+      <button class="modal-close" onclick="closeTerminateModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="flbl" for="term-search">بحث عن العقد</label>
+        <input type="text" id="term-search" class="finput" placeholder="ابحث برقم العقد أو اسم المستأجر أو العلامة التجارية..." oninput="filterTerminateContracts()" />
+      </div>
+      <div class="form-group">
+        <label class="flbl" for="term-contract">العقد <span class="req">*</span></label>
+        <select id="term-contract" class="finput" onchange="onTerminateContractChange()">
+          <option value="">-- اختر العقد --</option>
+        </select>
+      </div>
+      <div id="term-contract-info" style="display:none;background:var(--bg);border-radius:var(--radius);padding:10px 12px;font-size:14px;color:var(--text-m);margin-bottom:14px"></div>
+      <div class="form-group">
+        <label class="flbl" for="term-end-date">تاريخ انتهاء العقد <span class="req">*</span></label>
+        <input type="date" id="term-end-date" class="finput" />
+      </div>
+      <div class="form-group">
+        <label class="flbl" for="term-reason">سبب الانتهاء <span class="req">*</span></label>
+        <textarea id="term-reason" class="finput" placeholder="اكتب سبب إنهاء العقد..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="footer-l"></div>
+      <div class="footer-r">
+        <button class="btn btn-outline" onclick="closeTerminateModal()">إلغاء</button>
+        <button class="btn btn-primary" onclick="saveTermination()" style="background:linear-gradient(135deg,var(--red),#b91c1c)">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>إنهاء العقد
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ CONTRACT DETAIL MODAL ══════════ -->
+<div class="modal-backdrop" id="detailModalBackdrop" onclick="if(event.target===this)closeDetailModal()">
+  <div class="modal detail-modal" id="detailModal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="detailTitle">تفاصيل العقد</div>
+        <div class="modal-sub" id="detailSub"></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-primary btn-sm" onclick="printContractDetail()" title="طباعة تفاصيل العقد">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          طباعة
+        </button>
+        <button class="btn btn-outline btn-sm" id="detailEditBtn">
+          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          تعديل
+        </button>
+        <button class="modal-close" onclick="closeDetailModal()">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <div class="footer-l"></div>
+      <div class="footer-r">
+        <button class="btn btn-outline" onclick="closeDetailModal()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ READING HISTORY MODAL ══ -->
+<div class="modal-backdrop" id="readingHistoryBackdrop" onclick="if(event.target===this)closeReadingHistory()">
+  <div class="modal" style="max-width:800px">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="rhTitle">سجل قراءات العقد</div>
+        <div class="modal-sub" id="rhSub"></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-primary btn-sm" onclick="printReadingHistory()" title="طباعة سجل القراءات">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          طباعة
+        </button>
+        <button class="modal-close" onclick="closeReadingHistory()">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>#</th><th>النوع</th><th>رقم العداد</th><th>السنة</th><th>الشهر</th><th>تاريخ القراءة</th><th>القراءة</th><th>كمية الاستهلاك</th><th>قيمة الاستهلاك</th><th>تاريخ الإضافة</th><th id="rhActionsHeader" style="display:none">إجراءات</th>
+          </tr></thead>
+          <tbody id="rhTableBody"></tbody>
+        </table>
+        <div class="empty-state" id="rhEmpty" style="display:none">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+          <p>لا توجد قراءات مسجلة لهذا العقد</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="footer-l"></div>
+      <div class="footer-r">
+        <button class="btn btn-outline" onclick="closeReadingHistory()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ CONTRACT SERVICE LOG MODAL ══ -->
+<div class="modal-backdrop" id="contractLogBackdrop" onclick="if(event.target===this)closeContractLog()">
+  <div class="modal" style="max-width:920px">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="clTitle">سجل خدمات العقد</div>
+        <div class="modal-sub" id="clSub"></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-primary btn-sm" onclick="printContractLog()" title="طباعة سجل القراءات">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          طباعة
+        </button>
+        <button class="modal-close" onclick="closeContractLog()">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <!-- WATER -->
+      <div id="clWaterSection" style="display:none">
+        <div class="fsec-title">💧 قراءات الماء</div>
+        <div class="table-wrap" style="margin-bottom:10px">
+          <table>
+            <thead><tr><th>#</th><th>تاريخ القراءة</th><th>القراءة</th><th>كمية الاستهلاك</th><th>قيمة الاستهلاك</th><th>تاريخ الإضافة</th></tr></thead>
+            <tbody id="clWaterBody"></tbody>
+          </table>
+          <div class="empty-state" id="clWaterEmpty" style="display:none;padding:16px 0">
+            <p style="font-size:14px;color:var(--text-m);text-align:center">لا توجد قراءات ماء مسجلة</p>
+          </div>
+        </div>
+        <div style="background:var(--bg);border-radius:var(--radius);padding:12px;margin-bottom:22px">
+          <div class="fsec-title" style="margin-top:0;font-size:14px">حساب الاستهلاك بين قراءتين</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="flbl" for="clWaterFrom">من قراءة</label>
+              <select class="fsel" id="clWaterFrom"><option value="">-- اختر --</option></select>
+            </div>
+            <div class="form-group">
+              <label class="flbl" for="clWaterTo">إلى قراءة</label>
+              <select class="fsel" id="clWaterTo"><option value="">-- اختر --</option></select>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" id="clWaterCalcBtn" onclick="calcContractConsumption('water')">
+            <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            احسب الاستهلاك
+          </button>
+          <div id="clWaterResult" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"></div>
+        </div>
+      </div>
+
+
+      <!-- ELECTRICITY -->
+      <div id="clElectricSection" style="display:none">
+        <div class="fsec-title">⚡ قراءات الكهرباء</div>
+        <div class="table-wrap" style="margin-bottom:10px">
+          <table>
+            <thead><tr><th>#</th><th>تاريخ القراءة</th><th>القراءة</th><th>كمية الاستهلاك</th><th>قيمة الاستهلاك</th><th>تاريخ الإضافة</th></tr></thead>
+            <tbody id="clElectricBody"></tbody>
+          </table>
+          <div class="empty-state" id="clElectricEmpty" style="display:none;padding:16px 0">
+            <p style="font-size:14px;color:var(--text-m);text-align:center">لا توجد قراءات كهرباء مسجلة</p>
+          </div>
+        </div>
+        <div style="background:var(--bg);border-radius:var(--radius);padding:12px">
+          <div class="fsec-title" style="margin-top:0;font-size:14px">حساب الاستهلاك بين قراءتين</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="flbl" for="clElectricFrom">من قراءة</label>
+              <select class="fsel" id="clElectricFrom"><option value="">-- اختر --</option></select>
+            </div>
+            <div class="form-group">
+              <label class="flbl" for="clElectricTo">إلى قراءة</label>
+              <select class="fsel" id="clElectricTo"><option value="">-- اختر --</option></select>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" id="clElectricCalcBtn" onclick="calcContractConsumption('electricity')">
+            <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            احسب الاستهلاك
+          </button>
+          <div id="clElectricResult" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="footer-l"></div>
+      <div class="footer-r">
+        <button class="btn btn-outline" onclick="closeContractLog()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SERVICE PRICE SETTINGS MODAL ══ -->
+<div class="modal-backdrop" id="priceSettingsBackdrop" onclick="if(event.target===this)closePriceSettings()">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">تحديد أسعار الخدمات</div>
+        <div class="modal-sub">سعر الوحدة الواحدة للماء والكهرباء</div>
+      </div>
+      <button class="modal-close" onclick="closePriceSettings()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom:13px">
+        <label class="flbl" for="priceWater">💧 سعر وحدة الماء (لكل م³)</label>
+        <input type="number" id="priceWater" class="finput" placeholder="0.00" min="0" step="0.01" />
+      </div>
+      <div class="form-group">
+        <label class="flbl" for="priceElectric">⚡ سعر وحدة الكهرباء (لكل ك.و.س)</label>
+        <input type="number" id="priceElectric" class="finput" placeholder="0.00" min="0" step="0.01" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="footer-l"></div>
+      <div class="footer-r">
+        <button class="btn btn-outline" onclick="closePriceSettings()">إلغاء</button>
+        <button class="btn btn-primary" onclick="savePriceSettings()">حفظ الأسعار</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ DELETE CONFIRM ══ -->
+<div class="confirm-backdrop" id="confirmBackdrop">
+  <div class="confirm-box">
+    <div class="confirm-icon"><svg viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></div>
+    <div class="confirm-title" id="confirmTitle">حذف العقد</div>
+    <div class="confirm-msg" id="confirmMsg">هل أنت متأكد؟ لا يمكن التراجع عن هذا الإجراء.</div>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" onclick="closeConfirm()">إلغاء</button>
+      <button class="btn btn-danger" id="confirmBtn">حذف</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ KAMBIYALA MODAL ══ -->
+<div class="modal-backdrop" id="kb-modal-backdrop" onclick="if(event.target===this)closeKambiyalaModal()">
+  <div class="modal" style="max-width:680px;direction:rtl">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="kb-modal-title">إضافة كمبيالة / شيك تأمين</div>
+        <div class="modal-sub">أدخل بيانات الكمبيالة مقسمة على ثلاثة أقسام</div>
+      </div>
+      <button class="modal-close" onclick="closeKambiyalaModal()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="overflow-y:auto;max-height:80vh">
+
+
+      <!-- SECTION 1: البيانات الأساسية -->
+      <div class="fsec-title" style="margin-top:0">١ · البيانات الأساسية</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="flbl" for="kb-num">رقم الكمبيالة <span class="req">*</span></label>
+          <input type="text" id="kb-num" class="finput" placeholder="تسلسلي تلقائي" readonly style="background:var(--bg);cursor:default" />
+        </div>
+        <div class="form-group">
+          <label class="flbl" for="kb-type">نوع الكمبيالة <span class="req">*</span></label>
+          <select id="kb-type" class="finput" onchange="onKambiyalaTypeChange()">
+            <option value="payment">كمبيالة دفع</option>
+            <option value="insurance">شيك تأمين</option>
+          </select>
+        </div>
+      </div>
+
+
+      <!-- Insurance check fields -->
+      <div id="kb-insurance-fields" style="display:none">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="flbl" for="kb-check-num">رقم الشيك</label>
+            <input type="text" id="kb-check-num" class="finput" placeholder="رقم الشيك" />
+          </div>
+          <div class="form-group">
+            <label class="flbl" for="kb-check-bank">بنك الشيك</label>
+            <input type="text" id="kb-check-bank" class="finput" placeholder="اسم البنك المصدر للشيك" />
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="flbl" for="kb-issue-date">تاريخ التحرير</label>
+          <input type="date" id="kb-issue-date" class="finput" />
+        </div>
+        <div class="form-group">
+          <label class="flbl" for="kb-due-date">تاريخ الاستحقاق <span class="req">*</span></label>
+          <input type="date" id="kb-due-date" class="finput" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="flbl" for="kb-amount">المبلغ (د.أ) <span class="req">*</span></label>
+          <input type="number" id="kb-amount" class="finput" placeholder="0.000" min="0" step="0.001" />
+        </div>
+        <div class="form-group">
+          <label class="flbl" for="kb-bank-name">البنك المسحوب عليه / الفرع</label>
+          <input type="text" id="kb-bank-name" class="finput" placeholder="اسم البنك والفرع إن وجد" />
+        </div>
+      </div>
+
+
+      <!-- SECTION 2: بيانات الأطراف -->
+      <div class="fsec-title">٢ · بيانات الأطراف</div>
+      <div class="form-group" style="margin-bottom:12px">
+        <label class="flbl" for="kb-client-name">اسم العميل / المستثمر</label>
+        <input type="text" id="kb-client-name" class="finput" placeholder="اسم العميل أو المستثمر" list="kb-clients-list" />
+        <datalist id="kb-clients-list"></datalist>
+        <div class="fhint">يمكن اختيار من دليل المستثمرين أو كتابة اسم جديد</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="flbl" for="kb-client-address">العنوان (اختياري)</label>
+          <input type="text" id="kb-client-address" class="finput" placeholder="عنوان العميل" />
+        </div>
+        <div class="form-group">
+          <label class="flbl" for="kb-client-phone">تلفون للمتابعة</label>
+          <input type="tel" id="kb-client-phone" class="finput" placeholder="رقم التواصل" />
+        </div>
+      </div>
+
+
+      <!-- SECTION 3: بيانات الكمبيالة والمتابعة -->
+      <div class="fsec-title">٣ · بيانات الكمبيالة والمتابعة</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="flbl" for="kb-status">الحالة</label>
+          <select id="kb-status" class="finput">
+            <option value="due">مستحقة</option>
+            <option value="returned">مرتجعة</option>
+            <option value="paid">مسددة</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="flbl" for="kb-location">مكان وجودها</label>
+          <select id="kb-location" class="finput">
+            <option value="safe">عندنا بالصندوق</option>
+            <option value="bank">بالبنك</option>
+            <option value="other">عند الغير</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:12px">
+        <label class="flbl" for="kb-receipt-num">رقم سند القبض (رقم القيد المحاسبي — اختياري)</label>
+        <input type="text" id="kb-receipt-num" class="finput" placeholder="رقم القيد أو السند" />
+      </div>
+
+
+      <!-- PDF Upload -->
+      <div class="form-group">
+        <label class="flbl">صورة مرفقة (PDF للكمبيالة — اختياري)</label>
+        <div class="pdf-upload-area" id="kb-pdf-area"
+          ondragover="event.preventDefault()"
+          ondrop="handleKambiyalaPdfDrop(event)"
+          onclick="document.getElementById('kb-pdf-input').click()">
+          <div class="pdf-upload-icon">📄</div>
+          <div class="pdf-upload-text">اسحب ملف PDF هنا أو <strong>انقر للرفع</strong></div>
+          <div class="pdf-file-name" id="kb-pdf-filename" style="display:none"></div>
+          <input type="file" id="kb-pdf-input" accept=".pdf" onchange="processKambiyalaPdf(this.files[0])" style="display:none" />
+        </div>
+        <button type="button" id="kb-pdf-remove" class="btn btn-ghost btn-xs" style="display:none;margin-top:6px;color:var(--red)" onclick="removeKambiyalaPdf()">× إزالة المرفق</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="footer-l"></div>
+      <div class="footer-r">
+        <button class="btn btn-outline" onclick="closeKambiyalaModal()">إلغاء</button>
+        <button class="btn btn-primary" onclick="saveKambiyalaRecord()">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none"><polyline points="20,6 9,17 4,12"/></svg>
+          حفظ الكمبيالة
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ══ END KAMBIYALA MODAL ══ -->
+
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast">
+  <svg class="toast-ico" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>
+  <span id="toastMsg">تم الحفظ</span>
+</div>
+
+
+<!-- ══ WELCOME GREETING ══ -->
+<div class="welcome-banner" id="welcomeBanner">
+  <div class="welcome-emoji" id="welcomeEmoji">🌤️</div>
+  <div class="welcome-txt">
+    <div class="welcome-greet" id="welcomeGreet">صباح الخير</div>
+    <div class="welcome-name" id="welcomeName"></div>
+  </div>
+</div>
+
+
+<!-- ══ FAREWELL ══ -->
+<div class="farewell" id="farewellScreen">
+  <div class="farewell-emoji" id="farewellEmoji">👋</div>
+  <div class="farewell-title" id="farewellTitle">إلى اللقاء</div>
+  <div class="farewell-sub" id="farewellSub">شكراً لاستخدامك النظام</div>
+  <div class="farewell-spinner"></div>
+</div>
+
+
+<!-- ══ FLOATING ADD BUTTON ══ -->
+<button class="fab" id="fabAddContract" onclick="openModal()" title="إضافة عقد جديد">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+  <span class="fab-tip">إضافة عقد جديد</span>
+</button>
+
+
+<!-- ══ CONFETTI LAYER ══ -->
+<div class="confetti-wrap" id="confettiLayer"></div>
+
+

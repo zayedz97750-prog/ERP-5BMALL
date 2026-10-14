@@ -1,0 +1,135 @@
+<!-- ═══ 5B Mall — Overview Page ═══ -->
+    <div class="page active" id="page-overview">
+      <!-- Hero -->
+      <div class="dash-hero">
+        <div class="dash-hero-text">
+          <div class="dash-hero-title">مرحباً بك في لوحة التحكم</div>
+          
+        </div>
+        <div class="dash-hero-actions">
+          <button class="btn btn-outline" onclick="showPage('contracts',document.getElementById('nav-contracts'))">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            كل العقود
+          </button>
+        </div>
+      </div>
+
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-header"><span class="kpi-label">إجمالي العقود</span>
+            <div class="kpi-icon blue"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg></div></div>
+          <div class="kpi-value" id="kpi-total">84</div>
+          <div class="kpi-change up" id="kpi-total-sub">↑ +12 هذا العام</div>
+          <canvas class="kpi-spark" id="kpiSparkTotal" width="180" height="40"></canvas>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-header"><span class="kpi-label">عقود نشطة</span>
+            <div class="kpi-icon green"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg></div></div>
+          <div class="kpi-value" id="kpi-active">61</div>
+          <div class="kpi-change" id="kpi-active-sub" style="color:var(--text-m)">72.6% من الإجمالي</div>
+          <canvas class="kpi-spark" id="kpiSparkActive" width="180" height="40"></canvas>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-header"><span class="kpi-label">تنتهي قريباً</span>
+            <div class="kpi-icon amber"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div></div>
+          <div class="kpi-value" id="kpi-soon" style="color:var(--amber-600)">15</div>
+          <div class="kpi-change warn">خلال 12 شهراً</div>
+          <canvas class="kpi-spark" id="kpiSparkSoon" width="180" height="40"></canvas>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-header"><span class="kpi-label">الإيرادات 2025-26</span>
+            <div class="kpi-icon teal"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div></div>
+          <div class="kpi-value" id="kpi-revenue" style="font-size:22px">1.82M</div>
+          <div class="kpi-change up">↑ +14% عن العام الماضي</div>
+          <canvas class="kpi-spark" id="kpiSparkRevenue" width="180" height="40"></canvas>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><svg viewBox="0 0 24 24"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>الإيرادات الشهرية 2026 (د.أ ألف)</div></div>
+          <div class="card-body"><div class="chart-wrap"><canvas id="monthlyChart"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>حالة العقود</div></div>
+          <div class="card-body">
+            <div style="position:relative;height:140px"><canvas id="statusChart"></canvas></div>
+            <div class="donut-grid">
+              <div class="donut-item"><div class="donut-dot" style="background:#2563eb"></div><span class="donut-label">نشط</span><span class="donut-val" id="d-active">61</span></div>
+              <div class="donut-item"><div class="donut-dot" style="background:#d97706"></div><span class="donut-label">ينتهي قريباً</span><span class="donut-val" id="d-soon">15</span></div>
+              <div class="donut-item"><div class="donut-dot" style="background:#94a3b8"></div><span class="donut-label">منتهي</span><span class="donut-val" id="d-ended">5</span></div>
+              <div class="donut-item"><div class="donut-dot" style="background:#dc2626"></div><span class="donut-label">ملغي</span><span class="donut-val" id="d-cancelled">3</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="charts-grid">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><svg viewBox="0 0 24 24"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>الإيجار السنوي</div></div>
+          <div class="card-body">
+            <div class="card-note">📊 مقارنة الإيجار والرسوم السنوية لكل سنة (ألف د.أ)</div>
+            <div class="chart-wrap" style="height:220px"><canvas id="chartsYearly"></canvas></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>أعلى 8 مستأجرين</div></div>
+          <div class="card-body">
+            <div class="card-note">📊 ترتيب أعلى 8 مستأجرين حسب إجمالي قيمة الإيجار (د.أ)</div>
+            <div class="chart-wrap" style="height:220px"><canvas id="chartsTopTenants"></canvas></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>توزيع العقود حسب النوع</div></div>
+          <div class="card-body">
+            <div class="card-note">📊 نسبة العقود حسب نوعها (تجاري، مستودع، قصير الأجل، استثمار)</div>
+            <div class="chart-wrap" style="height:180px"><canvas id="chartsTypeDist"></canvas></div>
+            <div class="donut-grid" id="chartsTypeLegend"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>إجمالي الإيرادات</div></div>
+          <div class="card-body">
+            <div class="card-note">📊 توزيع إجمالي الإيرادات (إيجار + خدمات + معارف + ضريبة)</div>
+            <div class="chart-wrap" style="height:180px"><canvas id="chartsRevenueDist"></canvas></div>
+            <div class="donut-grid" id="chartsRevenueLegend"></div>
+          </div>
+        </div>
+      </div>
+      <div class="overview-bottom">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>عقود تنتهي قريباً</div>
+            <button class="btn btn-ghost btn-sm" onclick="showPage('contracts',document.getElementById('nav-contracts'))">عرض الكل</button>
+          </div>
+          <div class="card-body"><div class="expiry-list" id="expiryList"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>النشاط الأخير</div>
+          </div>
+          <div class="card-body"><div class="activity-list" id="activityList"></div></div>
+        </div>
+      </div>
+      <!-- Kambiyala Widget on Dashboard -->
+      <div class="card" id="kb-dash-widget" style="margin-bottom:16px;cursor:pointer" onclick="showPage('kambiyala',document.getElementById('nav-kambiyala'))">
+        <div class="card-body" style="padding:16px">
+          <div style="color:var(--text-m);font-size:14px">جاري التحميل...</div>
+        </div>
+      </div>
+
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>أحدث العقود المضافة</div>
+          <button class="btn btn-ghost btn-sm" onclick="showPage('contracts',document.getElementById('nav-contracts'))">عرض الكل</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>#</th><th>رقم العقد</th><th>المستأجر</th><th>العلامة التجارية</th><th>النوع</th><th>المدة</th><th>تاريخ البدء</th><th>الانتهاء</th><th>الحالة</th>
+            </tr></thead>
+            <tbody id="recentContractsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>

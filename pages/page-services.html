@@ -1,0 +1,104 @@
+<!-- ═══ 5B Mall — Services Page ═══ -->
+    <!-- ══ SERVICES ══ -->
+    <div class="page" id="page-services">
+
+
+      <!-- Service Entry Form -->
+      <div class="report-panel active" id="srv-form">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>إدارة قراءات العدادات</div>
+          </div>
+          <div class="card-body">
+            <div class="fsec-title">⚙️ أسعار الوحدات</div>
+            <div class="form-row" style="margin-bottom:16px">
+              <div class="form-group">
+                <label class="flbl" for="srv-priceWater">💧 سعر وحدة الماء (لكل م³)</label>
+                <input type="number" id="srv-priceWater" class="finput" placeholder="0.00" min="0" step="0.01" />
+              </div>
+              <div class="form-group">
+                <label class="flbl" for="srv-priceElectric">⚡ سعر وحدة الكهرباء (لكل ك.و.س)</label>
+                <input type="number" id="srv-priceElectric" class="finput" placeholder="0.00" min="0" step="0.01" />
+              </div>
+              <div class="form-group" style="align-self:flex-end">
+                <button class="btn btn-primary btn-sm" onclick="saveServicePricesInline()">
+                  <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+                  حفظ الأسعار
+                </button>
+              </div>
+            </div>
+            <div class="fsec-title" style="border-top:1px solid var(--border);padding-top:14px">نوع العداد</div>
+            <div class="type-cards" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px">
+              <div class="type-card" onclick="selectMeterType('water',this)">
+                <div class="type-card-icon" style="background:#e0f2fe">💧</div>
+                <div class="type-card-title">مياه</div>
+                <div class="type-card-sub">قراءات عدادات المياه</div>
+              </div>
+              <div class="type-card" onclick="selectMeterType('electricity',this)">
+                <div class="type-card-icon" style="background:#fef3c7">⚡</div>
+                <div class="type-card-title">كهرباء</div>
+                <div class="type-card-sub">قراءات عدادات الكهرباء</div>
+              </div>
+            </div>
+            <input type="hidden" id="srv-type" value="" />
+
+
+            <div id="meter-table-section" style="display:none">
+              <div class="table-wrap" style="margin-top:8px">
+                <div id="meter-loading" style="display:none;text-align:center;padding:20px;color:var(--text-m)">جاري التحميل...</div>
+                <table>
+                  <thead><tr>
+                    <th>#</th>
+                    <th style="cursor:pointer;user-select:none" onclick="sortMeterTable('num')">رقم العقد <span id="sortIcon-num" style="font-size:12px">⇅</span></th>
+                    <th>المستثمر</th><th>العلامة التجارية</th>
+                    <th style="cursor:pointer;user-select:none" onclick="sortMeterTable('landPlot')">رقم قطعة الأرض <span id="sortIcon-landPlot" style="font-size:12px">⇅</span></th>
+                    <th id="meter-col-header">رقم العداد</th>
+                    <th>تاريخ العداد</th><th>تاريخ القراءة</th><th>القراءة</th><th>السجل</th><th>حفظ</th>
+                  </tr></thead>
+                  <tbody id="meterTableBody"></tbody>
+                </table>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:16px;justify-content:flex-start">
+                <button class="btn btn-primary" onclick="saveAllMeterReadings()">
+                  <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>حفظ الكل
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Services Log: all contracts + reading counts -->
+      <div class="report-panel" id="srv-list">
+        <div class="card">
+          <div class="table-toolbar">
+            <div class="search-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input class="search-input" type="text" id="srvLogSearch" placeholder="بحث برقم العقد أو المستثمر أو قطعة الأرض..." oninput="renderServicesLogTable()" />
+            </div>
+            <span class="table-count" id="srvLogCount">0 عقد</span>
+            <button class="btn btn-outline btn-sm" onclick="openPriceSettings()">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+              تحديد الأسعار
+            </button>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr>
+                  <th>#</th><th>رقم العقد</th><th>المستثمر</th><th>العلامة التجارية</th><th>قطعة الأرض</th><th>عداد الماء</th><th>قراءات الماء</th><th>عداد الكهرباء</th><th>قراءات الكهرباء</th><th>إجراءات</th>
+                </tr></thead>
+                <tbody id="srvLogTableBody"></tbody>
+              </table>
+              <div class="empty-state" id="srvLogEmpty" style="display:none">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                <p>لا توجد عقود مسجلة للخدمات</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+

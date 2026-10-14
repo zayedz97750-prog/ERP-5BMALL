@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5B Mall — إدارة العقود</title>
+
+<!-- Favicon (inline base64) -->
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+
+<!-- ═══ CSS ═══ -->
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/extra.css">
+
+<!-- ═══ External Libraries ═══ -->
+<!-- SheetJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<!-- html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
+
+<!-- PWA Install -->
+<script src="./install.js" defer></script>
+</head>
+
+<body>
+
+<!-- ══════════════════════════════════════
+     LOGIN SCREEN
+     ══════════════════════════════════════ -->
+<!-- المحتوى من: pages/login-screen.html -->
+<div id="loginScreen" style="display:flex">
+  <!-- ... يتم تضمينه هنا عند البناء ... -->
+</div>
+
+<!-- ══════════════════════════════════════
+     APP SHELL
+     ══════════════════════════════════════ -->
+<div id="appShell" style="display:none">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <!-- المحتوى من: pages/login-screen.html (قسم الـ sidebar) -->
+
+  <!-- ═══ PAGES ═══ -->
+  <main class="main-content">
+
+    <!-- pages/page-overview.html    → لوحة التحكم الرئيسية  -->
+    <!-- pages/page-contracts.html   → جدول العقود           -->
+    <!-- pages/page-procedures.html  → بيانات الموقع          -->
+    <!-- pages/page-reports.html     → التقارير               -->
+    <!-- pages/page-services.html    → الخدمات                -->
+    <!-- pages/page-settings.html    → الإعدادات              -->
+    <!-- pages/page-admin.html       → لوحة الإدارة           -->
+    <!-- pages/page-maintenance-kambiyala.html → الصيانة/الكمبيالات -->
+
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODALS
+     ══════════════════════════════════════ -->
+<!-- pages/modal-contract-form.html  → نموذج إضافة/تعديل عقد -->
+<!-- pages/modals-other.html         → باقي النوافذ المنبثقة  -->
+
+<!-- ══════════════════════════════════════
+     CHART.JS
+     ══════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+<!-- ══════════════════════════════════════
+     APPLICATION JAVASCRIPT
+     (بالترتيب الصحيح للتبعيات)
+     ══════════════════════════════════════ -->
+<script>
+'use strict';
+/* ═══ Storage Keys ═══ */
+const SK_USERS          = 'lms_users_v1';
+const SK_SESSION        = 'lms_session_v1';
+const SK_CONTRACTS      = 'lease_contracts_v4';
+const SK_SERVICES       = 'lms_services_v1';
+const SK_METER_READINGS = 'lms_meter_readings_v1';
+const SK_SERVICE_PRICES = 'lms_service_prices_v1';
+const SK_FLOORS         = 'lms_floors_v1';
+const SK_ZONES          = 'lms_zones_v1';
+const SK_ACTIVITIES     = 'lms_activities_v1';
+const SK_LOCATIONS      = 'lms_site_locations_v1';
+const SK_KAMBIYALA      = 'lms_kambiyala_v1';
+const SK_MAINT          = 'lms_maintenance_v1';
+const SK_BUILDINGS      = 'lms_buildings_v1';
+</script>
+
+<!-- 1. Firebase -->
+<script src="./js/firebase.js"></script>
+<!-- 2. Users & Permissions -->
+<script src="./js/users.js"></script>
+<!-- 3. Login & Session -->
+<script src="./js/login.js"></script>
+<!-- 4. Contracts Data -->
+<script src="./js/contracts-data.js"></script>
+<!-- 5. Attachments (PDF/Image) -->
+<script src="./js/attachments.js"></script>
+<!-- 6. كتاب تبليغ -->
+<script src="./js/tabligh.js"></script>
+<!-- 7. Services -->
+<script src="./js/services.js"></script>
+<!-- 8. Meter Readings -->
+<script src="./js/meter-readings.js"></script>
+<!-- 9. Navigation -->
+<script src="./js/navigation.js"></script>
+<!-- 10. Fees, Rent Years & Payments -->
+<script src="./js/fees-payments.js"></script>
+<!-- 11. Contract Modal (Add/Edit) -->
+<script src="./js/contract-modal.js"></script>
+<!-- 12. Detail Modal -->
+<script src="./js/detail-modal.js"></script>
+<!-- 13. Table, Sorting & Delete -->
+<script src="./js/table.js"></script>
+<!-- 14. KPIs, Charts & Dashboard -->
+<script src="./js/charts-dashboard.js"></script>
+<!-- 15. All Reports -->
+<script src="./js/reports.js"></script>
+<!-- 16. Export (PDF + Excel) -->
+<script src="./js/export.js"></script>
+<!-- 17. Admin: Users Management -->
+<script src="./js/admin-users.js"></script>
+<!-- 18. Toast, Settings & Theme -->
+<script src="./js/settings-toast.js"></script>
+<!-- 19. Init, Multi-Location & Location Codes -->
+<script src="./js/init-locations.js"></script>
+<!-- 20. Filters & Sidebar -->
+<script src="./js/filters.js"></script>
+<!-- 21. Maintenance -->
+<script src="./js/maintenance.js"></script>
+<!-- 22. Kambiyala (كمبيالات) -->
+<script src="./js/kambiyala.js"></script>
+<!-- 23. ERP System & Cheques -->
+<script src="./js/erp-cheques.js"></script>
+
+</body>
+</html>
